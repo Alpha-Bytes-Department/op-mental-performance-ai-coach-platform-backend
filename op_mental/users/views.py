@@ -140,8 +140,8 @@ Optimal Performance Team"""
                         <td align="center" style="padding: 20px 0;">
                             <table width="600" border="0" cellspacing="0" cellpadding="0" style="border: 1px solid #ddd;">
                                 <tr>
-                                    <td align="center" style="padding: 40px; background-color: #f7f7f7;">
-                                        <h1 style="color: #333;">Verify Your Email</h1>
+                                    <td align="center" style="padding: 40px; background-color: #080000;">
+                                        <h1 style="color: #b3a107;">Verify Your Email</h1>
                                     </td>
                                 </tr>
                                 <tr>
@@ -160,7 +160,7 @@ Optimal Performance Team"""
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td align="center" style="padding: 20px; background-color: #f7f7f7; color: #888; font-size: 12px;">
+                                    <td align="center" style="padding: 20px; background-color: #080000; color: #b3a107; font-size: 12px;">
                                         &copy; 2025 Optimal Performance. All rights reserved.
                                     </td>
                                 </tr>

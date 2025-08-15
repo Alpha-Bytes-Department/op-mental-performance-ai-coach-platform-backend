@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     
     # Custom apps
     'users',
+    'reviews',
 ]
 
 MIDDLEWARE = [
