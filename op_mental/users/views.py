@@ -34,6 +34,9 @@ class UserRegistrationView(generics.CreateAPIView):
     permission_classes = [permissions.AllowAny]
     
     def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
         email = request.data.get('email', '').lower()
         try:
             user = User.objects.get(email=email)
@@ -55,40 +58,22 @@ Best regards,
 Optimal Performance Team"""
                 html_message = f"""
                 <html>
-                    <body style="font-family: Arial, sans-serif; margin: 0; padding: 0;">
-                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
-                            <tr>
-                                <td align="center" style="padding: 20px 0;">
-                                    <table width="600" border="0" cellspacing="0" cellpadding="0" style="border: 1px solid #ddd;">
-                                        <tr>
-                                            <td align="center" style="padding: 40px; background-color: #f7f7f7;">
-                                                <h1 style="color: #333;">Verify Your Email</h1>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding: 40px;">
-                                                <p style="color: #333;">Hello {user.username},</p>
-                                                <p style="color: #333;">It looks like you already have an account. Please click the button below to verify your email address.</p>
-                                                <table width="100%" border="0" cellspacing="0" cellpadding="0">
-                                                    <tr>
-                                                        <td align="center" style="padding: 20px 0;">
-                                                            <a href="{verify_link}" style="background-color: #007bff; color: #ffffff; padding: 15px 25px; text-decoration: none; border-radius: 5px; display: inline-block;">Verify Email</a>
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                                <p style="color: #333;">If you did not create an account, no further action is required.</p>
-                                                <p style="color: #333;">Best regards,<br>The Optimal Performance Team</p>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td align="center" style="padding: 20px; background-color: #f7f7f7; color: #888; font-size: 12px;">
-                                                &copy; 2025 Optimal Performance. All rights reserved.
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                        </table>
+                    <body style="font-family: sans-serif;">
+                        <div style="max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd;">
+                            <h2 style="background-color: #f7f7f7; color: #333; padding: 20px; text-align: center;">Verify Your Email</h2>
+                            <div style="padding: 20px;">
+                                <p>Hello {user.username},</p>
+                                <p>It looks like you already have an account. Please click the button below to verify your email address.</p>
+                                <div style="text-align: center; margin: 30px 0;">
+                                    <a href="{verify_link}" style="background-color: #007bff; color: #ffffff; padding: 15px 25px; text-decoration: none; border-radius: 5px;">Verify Email</a>
+                                </div>
+                                <p>If you did not create an account, no further action is required.</p>
+                                <p>Best regards,<br>The Optimal Performance Team</p>
+                            </div>
+                            <div style="background-color: #f7f7f7; color: #888; padding: 10px; text-align: center; font-size: 12px;">
+                                &copy; 2025 Optimal Performance. All rights reserved.
+                            </div>
+                        </div>
                     </body>
                 </html>
                 """
@@ -103,20 +88,19 @@ Optimal Performance Team"""
                 return Response({
                     'message': 'An account with this email already exists. A new verification email has been sent.'
                 }, status=status.HTTP_200_OK)
-            # If user is active, the serializer will handle the uniqueness error below
+            else:
+                # User is active, so this is a duplicate registration attempt.
+                # The serializer's validate_email will handle this, but we can be explicit.
+                return Response({
+                    'error': {
+                        'message': 'User with this email already exists.'
+                    },
+                    'status': status.HTTP_400_BAD_REQUEST
+                }, status=status.HTTP_400_BAD_REQUEST)
         except User.DoesNotExist:
             # No user with this email, proceed with normal registration
             pass
 
-        serializer = self.get_serializer(data=request.data)
-        try:
-            serializer.is_valid(raise_exception=True)
-        except ValidationError as e:
-            return Response(
-                {"errors": serializer.errors},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-    
         user = serializer.save() # Assumes serializer creates inactive user
         token = default_token_generator.make_token(user)
         uid = urlsafe_base64_encode(force_bytes(user.pk))
@@ -251,6 +235,7 @@ class UserProfileView(generics.RetrieveUpdateAPIView):
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
+        
 
         return Response({"message": "Profile updated successfully"}, status=status.HTTP_200_OK)
 

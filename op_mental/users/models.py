@@ -9,6 +9,13 @@ class CustomUserManager(BaseUserManager):
         if not email:
             raise ValueError(_('The Email must be set'))
         email = self.normalize_email(email)
+        username = email.split('@')[0]
+        original_username = username
+        counter = 1
+        while User.objects.filter(username=username).exists():
+            username = f"{original_username}{counter}"
+            counter += 1
+        extra_fields.setdefault('username', username)
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)

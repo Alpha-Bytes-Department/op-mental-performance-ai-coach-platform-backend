@@ -42,6 +42,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -58,6 +59,7 @@ INSTALLED_APPS = [
     # Custom apps
     'users',
     'reviews',
+    'journaling',
 ]
 
 MIDDLEWARE = [
@@ -162,6 +164,7 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'EXCEPTION_HANDLER': 'op_mental.custom_exception_handler.custom_exception_handler',
 }
 
 # Simple JWT settings
@@ -213,4 +216,11 @@ SPECTACULAR_SETTINGS = {
     'DESCRIPTION': 'API for the Optimal Performance application',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
+}
+
+JAZZMIN_SETTINGS = {
+    'site_title': 'Optimal Performance Admin',
+    'site_header': 'Optimal Performance Administration',
+    'site_brand': 'Optimal Performance',
+    'welcome_sign': 'Welcome to the Optimal Performance Admin Panel',
 }
