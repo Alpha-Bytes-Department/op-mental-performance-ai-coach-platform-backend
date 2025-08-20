@@ -1,15 +1,20 @@
 from rest_framework import serializers
 from .models import Review
-from users.serializers import UserProfileSerializer
+from users.models import User
+
+class ReviewerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'name', 'profile_image')
 
 class ReviewListSerializer(serializers.ModelSerializer):
-    user = UserProfileSerializer(read_only=True)
+    user = ReviewerSerializer(read_only=True)
 
     class Meta:
         model = Review
-        fields = ('id', 'user', 'rating', 'description', 'created_at')
+        fields = ('id', 'user', 'role', 'rating', 'description', 'created_at')
 
 class ReviewCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
-        fields = ('rating', 'description')
+        fields = ('role','rating', 'description')

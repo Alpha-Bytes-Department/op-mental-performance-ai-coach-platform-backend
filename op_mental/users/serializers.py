@@ -91,7 +91,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
 class UserProfileUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('name', 'gender', 'description', 'profile_image')
+        fields = ('name', 'phone', 'gender', 'description', 'profile_image')
 
 class PasswordResetSerializer(serializers.Serializer):
     email = serializers.EmailField()
