@@ -24,6 +24,7 @@ urlpatterns = [
     path('api/users/', include('users.urls')),  # Include user management URLs
     path('api/', include('reviews.urls')), # Include review app URLs
     path('api/', include('journaling.urls')), # Include journaling app URLs
+    path('api/subscriptions/', include('subscriptions.urls')),  # Include subscription management URLs
 ]
 
 if settings.DEBUG:

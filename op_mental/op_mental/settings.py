@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'users',
     'reviews',
     'journaling',
+    'subscriptions',
 ]
 
 MIDDLEWARE = [
@@ -169,7 +170,7 @@ REST_FRAMEWORK = {
 
 # Simple JWT settings
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'ACCESS_TOKEN_LIFETIME': timedelta(seconds=10),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
@@ -224,3 +225,9 @@ JAZZMIN_SETTINGS = {
     'site_brand': 'Optimal Performance',
     'welcome_sign': 'Welcome to the Optimal Performance Admin Panel',
 }
+
+# stripe settings
+STRIPE_TEST_PUBLIC_KEY = os.environ.get('STRIPE_TEST_PUBLIC_KEY')
+STRIPE_TEST_SECRET_KEY = os.environ.get('STRIPE_TEST_SECRET_KEY')
+#STRIPE_LIVE_PUBLIC_KEY = os.environ.get('STRIPE_LIVE_PUBLIC_KEY')
+#STRIPE_LIVE_SECRET_KEY = os.environ.get('STRIPE_LIVE_SECRET_KEY')
