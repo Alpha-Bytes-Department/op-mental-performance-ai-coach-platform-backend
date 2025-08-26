@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     'journaling',
     'subscriptions',
     'chatbot',
+    'mindset',
 ]
 
 MIDDLEWARE = [
@@ -107,6 +108,18 @@ DATABASES = {
         'PASSWORD': 'mypasswordalex',
         'HOST': 'localhost',
         'PORT': '5432',
+    }
+}
+
+
+# Cache settings for Redis
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",  # Using DB 1 for caching
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
     }
 }
 
@@ -210,7 +223,7 @@ EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = os.environ.get('EMAIL_HOST_USER')
 
 
-FRONTEND_URL = 'http://localhost:3000' # Example frontend URL
+FRONTEND_URL = 'http://10.10.12.10:3000' # Example frontend URL
 
 # DRF Spectacular (API Docs) settings
 SPECTACULAR_SETTINGS = {

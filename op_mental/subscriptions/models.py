@@ -6,9 +6,9 @@ from django.core.validators import MinValueValidator
 
 class SubscriptionPlan(models.Model):
     PLAN_TYPES = (
-        ('basic', 'Basic'),
-        ('premium', 'Premium'),
-        ('pro', 'Pro'),
+        ('monthly', 'Monthly'),
+        ('yearly', 'Yearly'),
+        ('free', 'free'),
     )
     name = models.CharField(max_length=50, choices=PLAN_TYPES, unique=True)
     description = models.TextField()

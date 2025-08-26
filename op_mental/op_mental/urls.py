@@ -26,6 +26,7 @@ urlpatterns = [
     path('api/', include('journaling.urls')), # Include journaling app URLs
     path('api/subscriptions/', include('subscriptions.urls')),  # Include subscription management URLs
     path('api/chatbot/', include('chatbot.urls')),  # Include chatbot app URLs
+    path('api/mindset/', include('mindset.urls')),  # Include mindset coach app URLs
 ]
 
 if settings.DEBUG:

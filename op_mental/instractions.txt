@@ -1,0 +1,41 @@
+Prompt for Updating Django REST API Chatbot with Redis (24h Session Storage)
+
+Integrate Redis into the Django project and use it as the storage layer for chat sessions.
+
+Each chat session should be identified by a unique session_id.
+
+When a user sends a message:
+
+Store the message in Redis under a key like chat:<session_id>.
+
+Append messages to a Redis list to preserve order.
+
+Set a time-to-live (TTL) of 24 hours on the key so it expires automatically.
+
+When the chatbot generates a reply:
+
+Store the assistant’s reply in the same Redis list.
+
+Refresh/reset the 24-hour TTL.
+
+Create an API endpoint to send messages:
+
+Accepts session_id (or generates a new one).
+
+Stores both user message and assistant reply in Redis.
+
+Returns the reply along with the active session_id.
+
+Create another API endpoint to fetch chat history:
+
+Reads all messages stored under chat:<session_id>.
+
+Returns the ordered list of user/assistant messages.
+
+If the Redis key has expired, return an error (e.g., “Session expired”).
+
+After 24 hours, Redis will automatically delete the chat history.
+
+The frontend should use session_id to continue an active chat and call the history endpoint to display ongoing messages.
+
+If a session has expired, the frontend should start a new session with a fresh session_id.
