@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     'subscriptions',
     'chatbot',
     'mindset',
+    'internal_challenge',
 ]
 
 MIDDLEWARE = [

@@ -360,7 +360,7 @@ class InternalChallengeTherapySystem:
             for line in lines:
                 line = line.strip()
                 # Remove bullet points, numbers, dashes
-                line = re.sub(r'^[\s\-\•\d\.\)\]]*', '', line).strip()
+                line = re.sub(r'^[\s\-\•\d\.\)\’]*', '', line).strip()
                 if line:
                     items.append(line)
         
@@ -572,91 +572,3 @@ Practice your daily emotion regulation techniques and use your action plan consi
             return f" Therapy session saved to {filename}"
         except Exception as e:
             return f" Error saving session: {str(e)}"
-
-# Example usage and interaction system
-class TherapyInterface:
-    def __init__(self):
-        self.therapy_system = InternalChallengeTherapySystem()
-        self.session_active = False
-    
-    def start_session(self):
-        self.session_active = True
-        print(" Welcome to Internal Challenge Therapy - 5-Phase Framework")
-        print("=" * 60)
-        print("\n I'm here to guide you through a therapeutic journey to understand and overcome your internal challenges.")
-        print("\n We'll work through 5 phases together:")
-        print("   Phase 1: Identification ")
-        print("   Phase 2: Exploration ") 
-        print("   Phase 3: Reframing & Strengths ")
-        print("   Phase 4: Action Planning ")
-        print("   Phase 5: Reflection & Adaptation ")
-        print("\n Remember: This is a safe space. All experiences are welcomed and explored.")
-        print("\n" + "=" * 60)
-        
-        # Get initial challenge description
-        print("\n Let's start by understanding what you're facing...")
-        initial_response = input("What internal challenge would you like to work through today? Please share what's on your mind: ")
-        
-        # Identify challenge type
-        self.therapy_system.challenge_type = self.therapy_system.identify_challenge_type(initial_response)
-        print(f"\n I sense you're working with: {self.therapy_system.challenge_type.value}")
-        
-        self.continue_session()
-    
-    def continue_session(self):
-        while self.session_active:
-            # Show current phase and goal
-            current_goal = self.therapy_system.phase_goals[self.therapy_system.current_phase]
-            print(f"\n **{self.therapy_system.current_phase.value}**")
-            print(f" Goal: {current_goal}")
-            print("-" * 50)
-            
-            # Get current question
-            current_question = self.therapy_system.get_current_question()
-            if not current_question:
-                # Phase complete
-                print(self.therapy_system.get_phase_summary())
-                
-                if not self.therapy_system.advance_to_next_phase():
-                    # All phases complete
-                    self.complete_session()
-                    break
-                continue
-            
-            # Ask question
-            print(f"\n {current_question['question']}")
-            response = input("\n Your response: ")
-            
-            # Process response
-            result = self.therapy_system.process_response(response)
-            
-            if result["status"] == "invalid_response":
-                print(f"\n {result['error']}")
-                print("Let's try again - your growth deserves thoughtful attention.")
-                continue
-            
-            elif result["status"] == "phase_complete":
-                print(f"\n Excellent work! You've completed this phase.")
-            
-            print(f"\n Thank you for that thoughtful response. Moving forward...")
-    
-    def complete_session(self):
-        print("\n" + "" * 20)
-        print("CONGRATULATIONS! You've completed the full 5-Phase Therapeutic Journey!")
-        print("" * 20)
-        
-        # Generate and show AI-only final summary
-        final_summary = self.therapy_system.generate_final_therapeutic_summary()
-        print(f"\n{final_summary}")
-        
-        # Save session
-        save_result = self.therapy_system.save_session()
-        print(f"\n{save_result}")
-        
-        self.session_active = False
-        print("\n Remember: You have the tools and strength to navigate any challenge. Take care of yourself!")
-
-# Run the therapy session
-if __name__ == "__main__":
-    interface = TherapyInterface()
-    interface.start_session()

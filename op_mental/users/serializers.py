@@ -71,6 +71,10 @@ class UserLoginSerializer(serializers.Serializer):
         
         return attrs
 
+from django.utils import timezone
+from subscriptions.models import UserSubscription
+
+
 class SocialAccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = SocialAccount
@@ -78,15 +82,24 @@ class SocialAccountSerializer(serializers.ModelSerializer):
 
 class UserProfileSerializer(serializers.ModelSerializer):
     social_accounts = SocialAccountSerializer(many=True, read_only=True)
+    is_subscribed = serializers.SerializerMethodField()
 
     class Meta:
         model = User
         fields = (
             'id', 'username', 'email', 'name',
             'phone', 'profile_image', 'gender', 'description', 'date_joined',
-            'social_accounts'
+            'social_accounts', 'is_subscribed'
         )
-        read_only_fields = ('id', 'email', 'date_joined', 'social_accounts')
+        read_only_fields = ('id', 'email', 'date_joined', 'social_accounts', 'is_subscribed')
+
+    def get_is_subscribed(self, obj):
+        """Check if the user has an active subscription."""
+        return UserSubscription.objects.filter(
+            user=obj,
+            status='active',
+            end_date__gte=timezone.now()
+        ).exists()
 
 class UserProfileUpdateSerializer(serializers.ModelSerializer):
     class Meta:

@@ -22,7 +22,13 @@ class ChatbotApiView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
+        serializer = ChatRequestSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        validated_data = serializer.validated_data
         user = request.user
+        session_id = validated_data.get('session_id')
 
         # Check for an active subscription
         has_active_subscription = UserSubscription.objects.filter(
@@ -36,18 +42,21 @@ class ChatbotApiView(APIView):
         if not has_active_subscription:
             counter, created = UserChatCounter.objects.get_or_create(user=user)
             if counter.message_count >= 5:
+                # Ensure a session_id exists for the response
+                if not session_id:
+                    new_session_id = uuid.uuid4()
+                    RedisChatSession.objects.create(id=new_session_id, user=request.user)
+                    session_id = str(new_session_id)
+                
                 return Response(
-                    {"detail": "You have reached your free message limit. Please subscribe for unlimited access."}, 
-                    status=status.HTTP_402_PAYMENT_REQUIRED
+                    {
+                        "reply": "You have reached your free message limit. Please subscribe for unlimited access.",
+                        "session_id": session_id
+                    },
+                    status=status.HTTP_208_ALREADY_REPORTED
                 )
 
-        serializer = ChatRequestSerializer(data=request.data)
-        if not serializer.is_valid():
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-        validated_data = serializer.validated_data
         user_message = validated_data['message']
-        session_id = validated_data.get('session_id')
         age_group = validated_data.get('age_group')
 
         # If no session_id is provided, create a new one
