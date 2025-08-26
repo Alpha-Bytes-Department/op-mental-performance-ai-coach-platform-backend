@@ -1,5 +1,25 @@
 from django.db import models
 from django.conf import settings
+
+class UserChatCounter(models.Model):
+    """Tracks the number of chat messages sent by a non-subscribed user."""
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='chat_counter'
+    )
+    message_count = models.PositiveIntegerField(
+        default=0,
+        help_text="Counts messages for non-subscribed users."
+    )
+
+    def __str__(self):
+        return f"{self.user.username} - Messages: {self.message_count}"
+
+    class Meta:
+        db_table = 'user_chat_counters'
+
+from django.conf import settings
 import uuid
 
 class RedisChatSession(models.Model):

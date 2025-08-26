@@ -8,7 +8,6 @@ class SubscriptionPlan(models.Model):
     PLAN_TYPES = (
         ('monthly', 'Monthly'),
         ('yearly', 'Yearly'),
-        ('free', 'free'),
     )
     name = models.CharField(max_length=50, choices=PLAN_TYPES, unique=True)
     description = models.TextField()

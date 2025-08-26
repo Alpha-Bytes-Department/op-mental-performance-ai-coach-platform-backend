@@ -8,9 +8,11 @@ from datetime import timedelta
 import uuid
 import json
 
-from .models import RedisChatSession
+from .models import RedisChatSession, UserChatCounter
 from .serializers import ChatRequestSerializer, ChatResponseSerializer
 from .chatbot_logic import GeneralChatSystem
+from subscriptions.models import UserSubscription
+
 
 # Define the 24-hour timeout in seconds
 SESSION_TIMEOUT = 24 * 60 * 60
@@ -20,6 +22,25 @@ class ChatbotApiView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
+        user = request.user
+
+        # Check for an active subscription
+        has_active_subscription = UserSubscription.objects.filter(
+            user=user,
+            status='active',
+            end_date__gte=timezone.now()
+        ).exists()
+
+        # If user is not subscribed, check their message count
+        counter = None
+        if not has_active_subscription:
+            counter, created = UserChatCounter.objects.get_or_create(user=user)
+            if counter.message_count >= 5:
+                return Response(
+                    {"detail": "You have reached your free message limit. Please subscribe for unlimited access."}, 
+                    status=status.HTTP_402_PAYMENT_REQUIRED
+                )
+
         serializer = ChatRequestSerializer(data=request.data)
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -69,6 +90,11 @@ class ChatbotApiView(APIView):
         # Save updated history back to Redis with a 24-hour TTL
         cache.set(redis_key, json.dumps(history), timeout=SESSION_TIMEOUT)
 
+        # If user is not subscribed, increment their message count after a successful response
+        if not has_active_subscription and counter:
+            counter.message_count += 1
+            counter.save()
+
         # Prepare and return the response
         response_serializer = ChatResponseSerializer({
             'reply': bot_response,
@@ -76,6 +102,7 @@ class ChatbotApiView(APIView):
         })
 
         return Response(response_serializer.data, status=status.HTTP_200_OK)
+
 
 
 class AllUserChatHistoryView(APIView):
