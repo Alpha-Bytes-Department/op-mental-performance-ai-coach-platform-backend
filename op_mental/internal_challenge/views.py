@@ -19,6 +19,13 @@ class ChallengeAPIView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         validated_data = serializer.validated_data
+
+        # Print the request message to the terminal for testing
+        print("\n--- Internal Challenge Request ---")
+        print(f"User: {request.user.email}")
+        print(f"Request Body: {validated_data}")
+        print("------------------------------------\n")
+
         user = request.user
         session_id = validated_data.get('session_id')
         user_message = validated_data['message']
@@ -112,3 +119,17 @@ class ChallengeAPIView(APIView):
                 response['question'] = current_question['question']
         
         return response
+
+
+class ChallengeHistoryView(APIView):
+    """API view to fetch the conversation history of a specific challenge session."""
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, session_id, *args, **kwargs):
+        try:
+            session = ChallengeSession.objects.get(id=session_id, user=request.user)
+            return Response(session.conversation_history, status=status.HTTP_200_OK)
+        except ChallengeSession.DoesNotExist:
+            return Response({"detail": "Session not found."}, status=status.HTTP_404_NOT_FOUND)
+    
+   
