@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.utils import timezone
 import uuid
 
 class ChallengeSession(models.Model):
@@ -11,11 +12,12 @@ class ChallengeSession(models.Model):
     session_data = models.JSONField(default=dict)
     conversation_history = models.JSONField(default=list)
     current_phase = models.CharField(max_length=50)
-    challenge_type = models.CharField(max_length=50)
+    challenge_type = models.CharField(max_length=50, default='General Challenge')
     current_question_index = models.PositiveIntegerField(default=0)
     
     # Session metadata
     is_complete = models.BooleanField(default=False)
+    session_started = models.DateTimeField(default=timezone.now)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

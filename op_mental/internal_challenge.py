@@ -380,7 +380,7 @@ class InternalChallengeTherapySystem:
                 for conv in self.conversation_history
             ])
             
-            prompt = f'''
+            prompt = f"""
             As an expert therapeutic supervisor, analyze this complete 5-Phase Internal Challenge Therapy session and provide a comprehensive clinical assessment.
 
             **Session Data:**
@@ -425,7 +425,7 @@ class InternalChallengeTherapySystem:
                - Long-term growth recommendations
 
             Use evidence-based therapeutic language while remaining compassionate and strengths-focused. Highlight concrete progress made in building the four core capacities.
-            '''
+            """
             
             # Use the correct OpenAI client syntax
             client = openai.OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
@@ -446,17 +446,17 @@ class InternalChallengeTherapySystem:
             return self._generate_fallback_summary()
     
     def _generate_fallback_summary(self) -> str:
-        return f'''
+        return f"""
 **AI Therapeutic Analysis:**
 
 **Therapeutic Progress Assessment:**
 • You successfully engaged with all 5 phases of the therapeutic process
 • Your responses demonstrate growing self-awareness and emotional intelligence
-• You\'ve developed concrete tools for managing your {self.challenge_type.value.lower()}
+• You've developed concrete tools for managing your {self.challenge_type.value.lower()}
 • Your commitment to daily practices shows strong therapeutic engagement
 
 **Core Capacities Development:**
-✓ **Distress Tolerance:** You\'ve shown ability to stay present with difficult emotions without immediately avoiding or escaping them
+✓ **Distress Tolerance:** You've shown ability to stay present with difficult emotions without immediately avoiding or escaping them
 ✓ **Cognitive Flexibility:** Evidence of considering multiple perspectives on your challenge rather than rigid thinking patterns
 ✓ **Emotional Literacy:** Growth in naming and understanding your emotional experiences with greater nuance and accuracy
 ✓ **Self-Compassion:** Movement toward more supportive self-talk patterns, replacing harsh self-criticism
@@ -476,11 +476,11 @@ class InternalChallengeTherapySystem:
 • Monitor progress and adjust strategies as needed
 
 **Prognosis and Next Steps:**
-Your therapeutic engagement and insight development indicate strong potential for continued growth. The tools and awareness you\'ve gained provide a solid foundation for managing future challenges. Focus on maintaining your daily practices and applying your new skills consistently.
+Your therapeutic engagement and insight development indicate strong potential for continued growth. The tools and awareness you've gained provide a solid foundation for managing future challenges. Focus on maintaining your daily practices and applying your new skills consistently.
 
 **Continued Growth Recommendation:**
 Practice your daily emotion regulation techniques and use your action plan consistently. Your therapeutic insights are real and will continue supporting your growth.
-'''
+"""
     
     def advance_to_next_phase(self) -> bool:
         phases = list(TherapyPhase)
@@ -496,16 +496,16 @@ Practice your daily emotion regulation techniques and use your action plan consi
         phase_name = self.current_phase.value
         goal = self.phase_goals[self.current_phase]
         
-        return f'''
+        return f"""
  **{phase_name}**
 
 **Phase Goal:** {goal}
 
-**What we\'ve accomplished in this phase:**
+**What we've accomplished in this phase:**
 {self._generate_phase_accomplishments()}
 
 **Moving forward with strength and clarity.** 
-'''
+"""
     
     def _generate_phase_accomplishments(self) -> str:
         accomplishments = []
@@ -581,7 +581,7 @@ class TherapyInterface:
         
         
         while not self.session_started:
-            user_input = input(" ").strip().upper()
+            user_input = input("\n ").strip().upper()
             
             if user_input == "START":
                 self.session_started = True
@@ -595,8 +595,8 @@ class TherapyInterface:
     def _display_welcome_message(self):
         print("\n Welcome to Internal Challenge Therapy - 5-Phase Framework")
     
-        print("\n I\'m here to guide you through a therapeutic journey to understand and overcome your internal challenges.")
-        print("\n We\'ll work through 5 phases together:")
+        print("\n I'm here to guide you through a therapeutic journey to understand and overcome your internal challenges.")
+        print("\n We'll work through 5 phases together:")
         print("   Phase 1: Identification ")
         print("   Phase 2: Exploration ") 
         print("   Phase 3: Reframing & Strengths ")
@@ -606,12 +606,12 @@ class TherapyInterface:
     
     
     def _get_initial_challenge(self):
-        print("\n Let\'s start by understanding what you\'re facing...")
-        initial_response = input("What internal challenge would you like to work through today? Please share what\'s on your mind: ")
+        print("\n Let's start by understanding what you're facing...")
+        initial_response = input("What internal challenge would you like to work through today? Please share what's on your mind: ")
         
         # Identify challenge type
         self.therapy_system.challenge_type = self.therapy_system.identify_challenge_type(initial_response)
-        print(f"\n I sense you\'re working with: {self.therapy_system.challenge_type.value}")
+        print(f"\n I sense you're working with: {self.therapy_system.challenge_type.value}")
     
     def continue_session(self):
         while self.session_active:
@@ -646,13 +646,13 @@ class TherapyInterface:
                 continue
             
             elif result["status"] == "phase_complete":
-                print(f"\n Excellent work! You\'ve completed this phase.")
+                print(f"\n Excellent work! You've completed this phase.")
             
             print(f"\n Thank you for that thoughtful response. Moving forward...")
-
+    
     def complete_session(self):
 
-        print("CONGRATULATIONS! You\'ve completed the full 5-Phase Therapeutic Journey!")
+        print("CONGRATULATIONS! You've completed the full 5-Phase Therapeutic Journey!")
 
         
         # Generate and show AI-only final summary

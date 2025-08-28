@@ -19,55 +19,71 @@ class ChallengeAPIView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         validated_data = serializer.validated_data
-
-        # Print the request message to the terminal for testing
-        print("\n--- Internal Challenge Request ---")
-        print(f"User: {request.user.email}")
-        print(f"Request Body: {validated_data}")
-        print("------------------------------------\n")
-
         user = request.user
         session_id = validated_data.get('session_id')
-        user_message = validated_data['message']
+        user_message = validated_data.get('message')
 
-        # Subscription check (Temporarily disabled for testing)
-        # The rule is that only subscribed users can use this feature.
-        # has_active_subscription = UserSubscription.objects.filter(
-        #     user=user, status='active', end_date__gte=timezone.now()
-        # ).exists()
-        #
-        # if not has_active_subscription:
-        #     return Response(
-        #         {"detail": "You must have an active subscription to use this feature."},
-        #         status=status.HTTP_402_PAYMENT_REQUIRED
-        #     )
-
-        # Get or create session
-        if session_id:
-            session = ChallengeSession.objects.filter(id=session_id, user=user).first()
-        else:
-            session = None
-
-        if not session:
+        if not session_id:
+            # New session: return welcome message and create session
             session = ChallengeSession.objects.create(user=user, current_phase=TherapyPhase.IDENTIFICATION.name)
+            
+            welcome_message = {
+                "session_id": session.id,
+                "is_session_complete": False,
+                "response_type": "welcome",
+                "message": [
+                    "Welcome to Internal Challenge Therapy - 5-Phase Framework",
+                    "I'm here to guide you through a therapeutic journey to understand and overcome your internal challenges.",
+                    "We'll work through 5 phases together:",
+                    "   Phase 1: Identification",
+                    "   Phase 2: Exploration",
+                    "   Phase 3: Reframing & Strengths",
+                    "   Phase 4: Action Planning",
+                    "   Phase 5: Reflection & Adaptation",
+                    "Remember: This is a safe space. All experiences are welcomed and explored.",
+                    "Let's start by understanding what you're facing..."
+                ],
+                "question": "What internal challenge would you like to work through today? Please share what's on your mind:"
+            }
+            return Response(welcome_message, status=status.HTTP_200_OK)
 
-        # Load therapy system from session state
-        therapy_system = self._load_system_from_session(session)
+        # Existing session
+        session = ChallengeSession.objects.filter(id=session_id, user=user).first()
+        if not session:
+            return Response({"detail": "Session not found."}, status=status.HTTP_404_NOT_FOUND)
 
-        # Process message
         if session.is_complete:
             return Response({"detail": "This session is complete."}, status=status.HTTP_400_BAD_REQUEST)
 
-        # First message of a new session identifies the challenge type
+        therapy_system = self._load_system_from_session(session)
+
+        # First message after welcome
         if not therapy_system.conversation_history:
-             therapy_system.challenge_type = therapy_system.identify_challenge_type(user_message)
+            therapy_system.challenge_type = therapy_system.identify_challenge_type(user_message)
+            # Manually add first user message to history
+            therapy_system.conversation_history.append({
+                "timestamp": timezone.now().isoformat(),
+                "phase": "Initial",
+                "question": "What internal challenge would you like to work through today? Please share what's on your mind:",
+                "response": user_message,
+                "question_key": "initial_challenge"
+            })
+            
+            current_question = therapy_system.get_current_question()
+            session = self._update_session_from_system(session, therapy_system)
+            response_data = {
+                "session_id": session.id,
+                "is_session_complete": False,
+                "phase": therapy_system.current_phase.value,
+                "phase_goal": therapy_system.phase_goals[therapy_system.current_phase],
+                "question": current_question['question'],
+                "response_type": "continue"
+            }
+            return Response(ChallengeResponseSerializer(response_data).data, status=status.HTTP_200_OK)
 
+        # Process subsequent messages
         result = therapy_system.process_response(user_message)
-
-        # Update and save session state
         session = self._update_session_from_system(session, therapy_system)
-
-        # Construct response
         response_data = self._prepare_response(session, therapy_system, result)
         
         return Response(ChallengeResponseSerializer(response_data).data, status=status.HTTP_200_OK)
