@@ -1,0 +1,40 @@
+{
+  "session_id": "session_1756424242",
+  "timestamp": "2025-08-29T06:07:46.543555",
+  "conversation_history": [
+    {
+      "timestamp": "2025-08-29T06:07:44.762711",
+      "session_id": "session_1756424242",
+      "user_message": "i am facing some mental health issue",
+      "coach_response": "It's brave of you to acknowledge and share that you're facing some mental health challenges. What specific feelings or thoughts have been most prominent for you recently?\n\nWhat aspects of this situation are within your control vs. outside your control?",
+      "step": 1,
+      "question": 2,
+      "user_responses": {
+        "circumstances": [
+          "i am facing some mental health issue"
+        ],
+        "control_analysis": "",
+        "letting_go": "",
+        "positivity_insights": [],
+        "past_ineffective_patterns": [],
+        "challenge_overcome": "",
+        "personal_mantra": "",
+        "final_statement": ""
+      }
+    }
+  ],
+  "user_responses": {
+    "circumstances": [
+      "i am facing some mental health issue"
+    ],
+    "control_analysis": "",
+    "letting_go": "",
+    "positivity_insights": [],
+    "past_ineffective_patterns": [],
+    "challenge_overcome": "",
+    "personal_mantra": "",
+    "final_statement": ""
+  },
+  "current_step": 1,
+  "current_question": 2
+}

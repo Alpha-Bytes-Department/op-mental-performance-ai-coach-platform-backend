@@ -1,0 +1,31 @@
+[
+    {
+        "message": [
+            "Welcome to Internal Challenge Therapy - 5-Phase Framework",
+            "I'm here to guide you through a therapeutic journey to understand and overcome your internal challenges.",
+            "We'll work through 5 phases together:",
+            "   Phase 1: Identification",
+            "   Phase 2: Exploration",
+            "   Phase 3: Reframing & Strengths",
+            "   Phase 4: Action Planning",
+            "   Phase 5: Reflection & Adaptation",
+            "Remember: This is a safe space. All experiences are welcomed and explored.",
+            "Let's start by understanding what you're facing..."
+        ],
+        "question": "What internal challenge would you like to work through today? Please share what's on your mind:",
+        "session_id": "007cffdb-af31-442e-9577-5a12868ca43f",
+        "response_type": "welcome",
+        "is_session_complete": false
+    },
+    {
+        "phase": "Phase 1: Identification ",
+        "question": "How would you rate the intensity of this challenge on a scale of 1-10, where 1 is barely noticeable and 10 is completely overwhelming?",
+        "response": "4",
+        "timestamp": "2025-08-30T03:25:36.741548",
+        "question_key": "intensity"
+    }
+]
+
+in this history you can see first we can see the welcome message and question. then i have to give answer for the "question": "What internal challenge would you like to work through today? Please share what's on your mind:",
+so give it in post request but in history it is not showing . when i give the question answer in post request like "i am facing mental depression" then i get the history and get a new response and user meassage as you can see in hitory 
+so why this problem happne . i really want to show in history like that the ai response and user message for every conversation but do not repied it in history 

@@ -5,5 +5,5 @@ app_name = 'internal_challenge'
 
 urlpatterns = [
     path('', ChallengeAPIView.as_view(), name='challenge-chat'),
-    path('<uuid:session_id>/history/', ChallengeHistoryView.as_view(), name='challenge-history'),
+    path('<uuid:session_id>/', ChallengeHistoryView.as_view(), name='challenge-history'),
 ]

@@ -28,7 +28,7 @@ class ChallengeAPIView(APIView):
             session = ChallengeSession.objects.create(user=user, current_phase=TherapyPhase.IDENTIFICATION.name)
             
             welcome_message = {
-                "session_id": session.id,
+                "session_id": str(session.id),
                 "is_session_complete": False,
                 "response_type": "welcome",
                 "message": [
@@ -43,9 +43,16 @@ class ChallengeAPIView(APIView):
                     "Remember: This is a safe space. All experiences are welcomed and explored.",
                     "Let's start by understanding what you're facing..."
                 ],
-                "question": "What internal challenge would you like to work through today? Please share what's on your mind:"
+                "question": "What internal challenge would you like to work through today? Please share what's on your mind:",
+                "error_message": None
             }
+            
+            session.conversation_history = [welcome_message]
+            session.save()
+            
             return Response(welcome_message, status=status.HTTP_200_OK)
+            
+            
 
         # Existing session
         session = ChallengeSession.objects.filter(id=session_id, user=user).first()
@@ -57,34 +64,41 @@ class ChallengeAPIView(APIView):
 
         therapy_system = self._load_system_from_session(session)
 
-        # First message after welcome
-        if not therapy_system.conversation_history:
+        if len(session.conversation_history) == 1:
+            # First message from user
             therapy_system.challenge_type = therapy_system.identify_challenge_type(user_message)
-            # Manually add first user message to history
+            
             therapy_system.conversation_history.append({
                 "timestamp": timezone.now().isoformat(),
                 "phase": "Initial",
                 "question": "What internal challenge would you like to work through today? Please share what's on your mind:",
                 "response": user_message,
-                "question_key": "initial_challenge"
+                "question_key": "initial_challenge",
+                "response_type": "user_response",
+                "error_message": None
             })
             
             current_question = therapy_system.get_current_question()
-            session = self._update_session_from_system(session, therapy_system)
             response_data = {
                 "session_id": session.id,
                 "is_session_complete": False,
                 "phase": therapy_system.current_phase.value,
                 "phase_goal": therapy_system.phase_goals[therapy_system.current_phase],
                 "question": current_question['question'],
-                "response_type": "continue"
+                "response_type": "continue",
+                "user_message": user_message
             }
-            return Response(ChallengeResponseSerializer(response_data).data, status=status.HTTP_200_OK)
+        else:
+            # Process subsequent messages
+            result = therapy_system.process_response(user_message)
+            response_data = self._prepare_response(session, therapy_system, result)
+            response_data['user_message'] = user_message
 
-        # Process subsequent messages
-        result = therapy_system.process_response(user_message)
+        
+        
+        
+
         session = self._update_session_from_system(session, therapy_system)
-        response_data = self._prepare_response(session, therapy_system, result)
         
         return Response(ChallengeResponseSerializer(response_data).data, status=status.HTTP_200_OK)
 

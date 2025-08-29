@@ -306,6 +306,14 @@ class InternalChallengeTherapySystem:
         is_valid, error_message = self.validate_response(response)
         
         if not is_valid:
+            self.conversation_history.append({
+                "timestamp": datetime.now().isoformat(),
+                "phase": self.current_phase.value,
+                "question": current_question["question"],
+                "response": response.strip(),
+                "error_message": error_message,
+                "response_type": "invalid_user_response"
+            })
             return {
                 "status": "invalid_response",
                 "error": error_message,
@@ -328,7 +336,9 @@ class InternalChallengeTherapySystem:
             "phase": self.current_phase.value,
             "question": current_question["question"],
             "response": response.strip(),
-            "question_key": question_key
+            "question_key": question_key,
+            "response_type": "user_response",
+            "error_message": None
         })
         
         # Move to next question
