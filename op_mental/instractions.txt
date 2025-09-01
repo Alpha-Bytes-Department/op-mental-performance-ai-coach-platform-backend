@@ -1,35 +1,22 @@
-in mindset app,
-
-   ok the first question is showing when i first press start but when i give the first question answer it again ask the first question 
-
-
-   {
-    "message":"start"
+in my journaling app when i hit the create journal
+{
+   "message": "1"
 }
 
 the response is 
-
 {
-    "reply": "Welcome to Your Mindset Transformation!\n\nWe'll work through 4 simple steps:\n\nStep 1: Accept the Circumstances\nStep 2: Find Positivity in the Situation \nStep 3: Learn from Past Patterns \nStep 4: Create Your Personal Mantra \n\nThen you'll get your personalized daily plan.\n\nLet's start by understanding what you're facing. What challenging circumstances are you currently facing that you need to accept?",
-    "session_id": 14,
-    "current_step": 1,
-    "is_complete": false
+    "reply": "Wins are easy to overlook. Let's dive into your success. Tell me about a recent personal achievement or positive experience you'd like to explore deeper.",
+    "session_id": 11
 }
 
-and when i give the reply 
-
+then when i give reply with session_id
 {
-    "session_id": 14,
-    "message":"I’ve been feeling overwhelmed with job hunting lately. Even though I apply to many places, I often don’t hear back, and it’s hard to stay motivated."
+    "session_id": "11",
+    "message":"Sure! I set aside 20 minutes every morning, used guided meditation audio, and kept a small journal to note how I felt before and after each session. This helped me stay consistent and track my progress."
 }
-
-the answer is 
-
+then the response is 
 {
-    "reply": "Let's start by understanding what you're facing. What challenging circumstances are you currently facing that you need to accept?",
-    "session_id": 14,
-    "current_step": 1,
-    "is_complete": false
+    "reply": "Invalid choice. Please select 1, 2, 3, or 4.",
+    "session_id": "11"
 }
-
-fix the problem
+why it is 

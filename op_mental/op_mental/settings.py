@@ -241,6 +241,11 @@ JAZZMIN_SETTINGS = {
     'welcome_sign': 'Welcome to the Optimal Performance Admin Panel',
 }
 
+JAZZMIN_UI_TWEAKS = {
+
+    "theme": "darkly",
+}
+
 # stripe settings
 STRIPE_PUBLIC_KEY = os.environ.get('STRIPE_PUBLIC_KEY')
 STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
