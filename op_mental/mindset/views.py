@@ -34,15 +34,17 @@ class MindsetCoachApiView(APIView):
                 # New session
                 session = MindsetSession.objects.create(user=user)
                 welcome_message = coach.get_welcome_message()
+                initial_question = coach.get_initial_question()
+                full_welcome_message = f"{welcome_message}\n\n{initial_question}"
                 
                 MindsetMessage.objects.create(
                     session=session,
                     user_message="<start>",
-                    coach_response=welcome_message
+                    coach_response=full_welcome_message
                 )
                 
                 response_data = {
-                    'reply': welcome_message,
+                    'reply': full_welcome_message,
                     'session_id': session.id,
                     'current_step': session.current_step,
                     'is_complete': False
@@ -50,45 +52,60 @@ class MindsetCoachApiView(APIView):
             else:
                 # Existing session
                 session = MindsetSession.objects.get(id=session_id, user=user)
+                
+                # Simple validation from mindset_mantra.py
+                message_lower = user_message.lower().strip()
+                word_count = len(message_lower.split())
+                minimal_responses = ['start', 'next', 'go', 'ok', 'okay', 'yes', 'no', 'y', 'n']
+
+                if message_lower in minimal_responses or word_count < 2:
+                    # Get the last question to repeat it
+                    last_message = MindsetMessage.objects.filter(session=session).order_by('-timestamp').first()
+                    if last_message:
+                        question_to_repeat = last_message.coach_response
+                        # A more specific prompt for the user
+                        if "Welcome to Your Mindset Transformation!" in question_to_repeat:
+                            question_to_repeat = "Let's start by understanding what you're facing. What challenging circumstances are you currently facing that you need to accept?"
+
+                    else:
+                        question_to_repeat = "Please provide a more detailed response."
+
+                    return Response({
+                        'reply': f"Please provide a more detailed response. Even a few words will help. {question_to_repeat}",
+                        'session_id': session.id,
+                        'current_step': session.current_step,
+                        'is_complete': False
+                    }, status=status.HTTP_200_OK)
+
                 messages_count = MindsetMessage.objects.filter(session=session).count()
 
-                if messages_count == 1:
-                    # First real message from the user
-                    coach_response = coach.get_initial_question()
-                    
-                    MindsetMessage.objects.create(
-                        session=session,
-                        user_message=user_message,
-                        coach_response=coach_response
-                    )
-                else:
-                    # Ongoing conversation
-                    db_messages = MindsetMessage.objects.filter(session=session).order_by('timestamp')
-                    history = [{
-                        "user_message": msg.user_message,
-                        "coach_response": msg.coach_response,
-                        'step': msg.session.current_step
-                    } for msg in db_messages]
+                # Ongoing conversation
+                db_messages = MindsetMessage.objects.filter(session=session).order_by('timestamp')
+                history = [{
+                    "user_message": msg.user_message,
+                    "coach_response": msg.coach_response,
+                    'step': msg.session.current_step
+                } for msg in db_messages]
 
-                    session_data = {
-                        'current_step': session.current_step,
-                        'user_responses': session.user_responses,
-                        'history': history
-                    }
+                session_data = {
+                    'current_step': session.current_step,
+                    'user_responses': session.user_responses,
+                    'history': history
+                }
 
-                    response = coach.get_response(user_message, session_data)
-                    coach_response = response['reply']
-                    updated_state = response['updated_state']
+                response = coach.get_response(user_message, session_data)
+                coach_response = response['reply']
+                updated_state = response['updated_state']
 
-                    MindsetMessage.objects.create(
-                        session=session,
-                        user_message=user_message,
-                        coach_response=coach_response
-                    )
+                MindsetMessage.objects.create(
+                    session=session,
+                    user_message=user_message,
+                    coach_response=coach_response
+                )
 
-                    session.current_step = updated_state['current_step']
-                    session.user_responses = updated_state['user_responses']
-                    session.save()
+                session.current_step = updated_state['current_step']
+                session.user_responses = updated_state['user_responses']
+                session.save()
                 
                 response_data = {
                     'reply': coach_response,
