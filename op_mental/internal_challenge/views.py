@@ -68,29 +68,53 @@ class ChallengeAPIView(APIView):
             # First message from user
             therapy_system.challenge_type = therapy_system.identify_challenge_type(user_message)
             
-            therapy_system.conversation_history.append({
-                "timestamp": timezone.now().isoformat(),
-                "phase": "Initial",
-                "question": "What internal challenge would you like to work through today? Please share what's on your mind:",
-                "response": user_message,
-                "question_key": "initial_challenge",
-                "response_type": "user_response",
-                "error_message": None
-            })
-            
+            # Update the history with the user's first message
+            therapy_system.conversation_history[0]['response'] = user_message
+            therapy_system.conversation_history[0]['response_type'] = 'user_response'
+
+            # Get the first question
             current_question = therapy_system.get_current_question()
+
+            # Add the first question to the history
+            if current_question:
+                therapy_system.conversation_history.append({
+                    "timestamp": timezone.now().isoformat(),
+                    "phase": therapy_system.current_phase.value,
+                    "question": current_question["question"],
+                    "response": None,
+                    "question_key": current_question["key"],
+                    "response_type": "ai_question",
+                    "error_message": None
+                })
+
             response_data = {
                 "session_id": session.id,
                 "is_session_complete": False,
                 "phase": therapy_system.current_phase.value,
                 "phase_goal": therapy_system.phase_goals[therapy_system.current_phase],
-                "question": current_question['question'],
+                "question": current_question['question'] if current_question else None,
                 "response_type": "continue",
                 "user_message": user_message
             }
         else:
             # Process subsequent messages
             result = therapy_system.process_response(user_message)
+            
+            # After processing the response, get the next question
+            current_question = therapy_system.get_current_question()
+            
+            # Add the new question to the history if it exists
+            if current_question and result.get('status') == 'continue':
+                therapy_system.conversation_history.append({
+                    "timestamp": timezone.now().isoformat(),
+                    "phase": therapy_system.current_phase.value,
+                    "question": current_question["question"],
+                    "response": None,
+                    "question_key": current_question["key"],
+                    "response_type": "ai_question",
+                    "error_message": None
+                })
+
             response_data = self._prepare_response(session, therapy_system, result)
             response_data['user_message'] = user_message
 

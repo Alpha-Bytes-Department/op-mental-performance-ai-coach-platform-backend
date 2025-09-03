@@ -14,6 +14,7 @@ from pathlib import Path
 import os
 from datetime import timedelta
 from dotenv import load_dotenv
+from jazzminsetting.utils import get_admin_theme
 
 # Load environment variables from .env file
 load_dotenv()
@@ -64,6 +65,7 @@ INSTALLED_APPS = [
     'chatbot',
     'mindset',
     'internal_challenge',
+    'jazzminsetting',
 ]
 
 MIDDLEWARE = [
@@ -242,8 +244,7 @@ JAZZMIN_SETTINGS = {
 }
 
 JAZZMIN_UI_TWEAKS = {
-
-    "theme": "darkly",
+    "theme": get_admin_theme(),
 }
 
 # stripe settings

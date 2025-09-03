@@ -301,54 +301,41 @@ class InternalChallengeTherapySystem:
         current_question = self.get_current_question()
         if not current_question:
             return {"status": "phase_complete"}
-        
-        # Validate response
+
         is_valid, error_message = self.validate_response(response)
-        
+
+        # Find the last entry in the history to update it
+        last_entry = self.conversation_history[-1] if self.conversation_history else None
+
         if not is_valid:
-            self.conversation_history.append({
-                "timestamp": datetime.now().isoformat(),
-                "phase": self.current_phase.value,
-                "question": current_question["question"],
-                "response": response.strip(),
-                "error_message": error_message,
-                "response_type": "invalid_user_response"
-            })
+            if last_entry and last_entry.get("question_key") == current_question["key"]:
+                last_entry["error_message"] = error_message
+                last_entry["response_type"] = "invalid_user_response"
             return {
                 "status": "invalid_response",
                 "error": error_message,
-                "question": current_question["question"]
+                "question": current_question["question"],
             }
-        
-        # Store the response
+
         question_key = current_question["key"]
         if current_question["type"] == "scale":
             self.session_data[question_key] = int(response.strip())
         elif current_question["type"] == "list":
-            # Parse list response
             self.session_data[question_key] = self._parse_list_response(response)
         else:
             self.session_data[question_key] = response.strip()
-        
-        # Add to conversation history
-        self.conversation_history.append({
-            "timestamp": datetime.now().isoformat(),
-            "phase": self.current_phase.value,
-            "question": current_question["question"],
-            "response": response.strip(),
-            "question_key": question_key,
-            "response_type": "user_response",
-            "error_message": None
-        })
-        
-        # Move to next question
+
+        # Update the last history entry with the user's response
+        if last_entry and last_entry.get("question_key") == current_question["key"]:
+            last_entry["response"] = response.strip()
+            last_entry["response_type"] = "user_response"
+            last_entry["timestamp"] = datetime.now().isoformat()
+
         self.current_question_index += 1
-        
-        # Check if phase is complete
-        phase_questions = self.phase_questions.get(self.current_phase, [])
-        if self.current_question_index >= len(phase_questions):
+
+        if self.current_question_index >= len(self.phase_questions.get(self.current_phase, [])):
             return {"status": "phase_complete"}
-        
+
         return {"status": "continue"}
     
     def _parse_list_response(self, response: str) -> List[str]:
