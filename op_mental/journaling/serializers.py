@@ -7,11 +7,11 @@ class JournalEntrySerializer(serializers.ModelSerializer):
         fields = ('author', 'message', 'timestamp')
 
 class JournalSessionSerializer(serializers.ModelSerializer):
-    entries = JournalEntrySerializer(many=True, read_only=True)
+    Entries = JournalEntrySerializer(many=True, read_only=True)
 
     class Meta:
         model = JournalSession
-        fields = ('id', 'user', 'category', 'summary', 'created_at', 'entries')
+        fields = ('id', 'user', 'category', 'summary', 'created_at', 'Entries')
         read_only_fields = ('user',)
 
 class JournalSessionListSerializer(serializers.ModelSerializer):

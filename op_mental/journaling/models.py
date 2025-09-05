@@ -13,6 +13,8 @@ class JournalSession(models.Model):
     category = models.CharField(max_length=50, choices=CATEGORY_CHOICES)
     summary = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    session_data = models.JSONField(null=True, blank=True)
+
 
     def __str__(self):
         return f"Journal session by {self.user} on {self.created_at.strftime('%Y-%m-%d')}"
