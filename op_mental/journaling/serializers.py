@@ -7,7 +7,7 @@ class JournalEntrySerializer(serializers.ModelSerializer):
         fields = ('author', 'message', 'timestamp')
 
 class JournalSessionSerializer(serializers.ModelSerializer):
-    Entries = JournalEntrySerializer(many=True, read_only=True)
+    Entries = JournalEntrySerializer(source='entries', many=True, read_only=True)
 
     class Meta:
         model = JournalSession
