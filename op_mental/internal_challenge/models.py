@@ -14,6 +14,7 @@ class ChallengeSession(models.Model):
     current_phase = models.CharField(max_length=50)
     challenge_type = models.CharField(max_length=50, default='General Challenge')
     current_question_index = models.PositiveIntegerField(default=0)
+    summary = models.TextField(null=True, blank=True)
     
     # Session metadata
     is_complete = models.BooleanField(default=False)

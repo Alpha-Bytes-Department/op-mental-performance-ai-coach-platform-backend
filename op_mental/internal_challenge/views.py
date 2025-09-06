@@ -166,6 +166,21 @@ class ChallengeAPIView(APIView):
                 response['is_session_complete'] = True
                 response['summary'] = system.generate_final_therapeutic_summary()
                 response['response_type'] = 'final_summary'
+            else: # If not final summary, get next question
+                current_question = system.get_current_question()
+                if current_question:
+                    response['question'] = current_question['question']
+                    response['response_type'] = 'continue' # Change response type to continue
+                    # Add the new question to the history
+                    system.conversation_history.append({
+                        "timestamp": timezone.now().isoformat(),
+                        "phase": system.current_phase.value,
+                        "question": current_question["question"],
+                        "response": None,
+                        "question_key": current_question["key"],
+                        "response_type": "ai_question",
+                        "error_message": None
+                    })
             session.save()
         else: # continue
             current_question = system.get_current_question()
@@ -186,4 +201,3 @@ class ChallengeHistoryView(APIView):
         except ChallengeSession.DoesNotExist:
             return Response({"detail": "Session not found."}, status=status.HTTP_404_NOT_FOUND)
     
-   

@@ -1,0 +1,80 @@
+{
+    "session_id": "a1e8737d-afbf-4704-ad6a-264d323ce795",
+    "is_session_complete": false,
+    "phase": "Phase 2: Exploration ",
+    "phase_goal": "Create safe, deep exploration to identify core beliefs, body experiences, and personal narratives driving the emotional response.",
+    "question": "Where do you feel this emotion or challenge in your body? Describe any physical sensations, tension, or changes you notice.",
+    "summary": null,
+    "conversation_history": [
+        {
+            "message": [
+                "Welcome to Internal Challenge Therapy - 5-Phase Framework",
+                "I'm here to guide you through a therapeutic journey to understand and overcome your internal challenges.",
+                "We'll work through 5 phases together:",
+                "   Phase 1: Identification",
+                "   Phase 2: Exploration",
+                "   Phase 3: Reframing & Strengths",
+                "   Phase 4: Action Planning",
+                "   Phase 5: Reflection & Adaptation",
+                "Remember: This is a safe space. All experiences are welcomed and explored.",
+                "Let's start by understanding what you're facing..."
+            ],
+            "question": "What internal challenge would you like to work through today? Please share what's on your mind:",
+            "response": "I think my biggest internal challenge right now is staying consistent. I start things with motivation, but after a while, I lose focus and struggle to keep the momentum going.",
+            "session_id": "a1e8737d-afbf-4704-ad6a-264d323ce795",
+            "error_message": null,
+            "response_type": "user_response",
+            "is_session_complete": false
+        },
+        {
+            "phase": "Phase 1: Identification ",
+            "question": "How would you rate the intensity of this challenge on a scale of 1-10, where 1 is barely noticeable and 10 is completely overwhelming?",
+            "response": "7",
+            "timestamp": "2025-09-07T04:31:02.741224",
+            "question_key": "intensity",
+            "error_message": null,
+            "response_type": "user_response"
+        },
+        {
+            "phase": "Phase 1: Identification ",
+            "question": "When did you first notice this challenge beginning? Please describe the timeline and any changes over time.",
+            "response": "I started noticing it during my university years. In the beginning, I was very consistent with my studies and habits, but over time, especially when things got stressful or when I felt overwhelmed, I slipped out of routine. Since then, it comes and goes—I’ll have a strong phase, then suddenly lose track again.",
+            "timestamp": "2025-09-07T04:31:34.587249",
+            "question_key": "duration",
+            "error_message": null,
+            "response_type": "user_response"
+        },
+        {
+            "phase": "Phase 1: Identification ",
+            "question": "Which areas of your life are most affected by this challenge? (Consider: work, relationships, health, self-esteem, daily activities)",
+            "response": "It mostly affects my work and daily activities. I sometimes delay tasks or don’t finish them on time, which creates stress. It also affects my health because I skip exercise or healthy routines when I lose consistency, and that lowers my self-esteem too.",
+            "timestamp": "2025-09-07T04:32:05.392480",
+            "question_key": "impact",
+            "error_message": null,
+            "response_type": "user_response"
+        },
+        {
+            "phase": "Phase 1: Identification ",
+            "question": "What internal or external factors seem to make this challenge stronger or weaker?",
+            "response": "It gets stronger when I’m under pressure, feeling tired, or surrounded by distractions. On the other hand, it gets weaker when I have a clear plan, supportive people around me, and when I break tasks into small, manageable steps that keep me motivated.",
+            "timestamp": "2025-09-07T04:32:43.980767",
+            "question_key": "interfering_factors",
+            "error_message": null,
+            "response_type": "user_response"
+        }
+    ]
+}
+
+this is my history but the last question is 
+
+{
+    "session_id": "a1e8737d-afbf-4704-ad6a-264d323ce795",
+    "is_session_complete": false,
+    "response_type": "continue",
+    "question": "Where do you feel this emotion or challenge in your body? Describe any physical sensations, tension, or changes you notice.",
+    "phase": "Phase 1: Identification ",
+    "phase_goal": "Understand the challenge clearly and completely by assessing its intensity, duration, impact, and interfering factors.",
+    "error_message": null,
+    "summary": "\n **Phase 1: Identification **\n\n**Phase Goal:** Understand the challenge clearly and completely by assessing its intensity, duration, impact, and interfering factors.\n\n**What we've accomplished in this phase:**\n• Identified challenge intensity: 7/10\n• Mapped timeline and duration of the challenge\n• Assessed impact on life areas\n• Identified key interfering factors\n\n**Moving forward with strength and clarity.** \n"
+}
+this is not showing 
