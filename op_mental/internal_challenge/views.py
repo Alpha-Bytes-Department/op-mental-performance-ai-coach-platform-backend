@@ -197,7 +197,19 @@ class ChallengeHistoryView(APIView):
     def get(self, request, session_id, *args, **kwargs):
         try:
             session = ChallengeSession.objects.get(id=session_id, user=request.user)
-            return Response(session.conversation_history, status=status.HTTP_200_OK)
+            
+            # Get the conversation history
+            history = session.conversation_history
+            
+            # Add summary if it exists in session_data
+            if session.session_data.get('summary') and history:
+                history[-1]['summary'] = session.session_data['summary']
+            
+            # If there's a phase summary, add that too
+            if session.session_data.get('phase_summary') and history:
+                history[-1]['phase_summary'] = session.session_data['phase_summary']
+            
+            return Response(history, status=status.HTTP_200_OK)
         except ChallengeSession.DoesNotExist:
             return Response({"detail": "Session not found."}, status=status.HTTP_404_NOT_FOUND)
     
