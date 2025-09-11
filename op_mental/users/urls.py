@@ -13,7 +13,8 @@ urlpatterns = [
     path('token/verify/', TokenVerifyView.as_view(), name='token_verify'),
     path('profile/', views.UserProfileView.as_view(), name='profile'),
     path('password/reset/', views.PasswordResetView.as_view(), name='password_reset'),
-    path('password/reset/confirm/<str:uid>/<str:token>/', views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    #path('password/reset/confirm/<str:uid>/<str:token>', views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    path('pass-reset/<str:uid>/<str:token>', views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
     path('auth/google/', views.GoogleLoginView.as_view(), name='google_login'),
     path('email/verify/<str:uidb64>/<str:token>/', views.EmailVerifyView.as_view(), name='email_verify'),
 ]

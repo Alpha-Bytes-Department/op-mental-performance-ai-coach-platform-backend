@@ -1,15 +1,20 @@
-
 from pathlib import Path
 import os
 from datetime import timedelta
 from dotenv import load_dotenv
 from jazzminsetting.utils import get_admin_theme
 
+from django.db.utils import ProgrammingError
+
 def load_config_from_db():
     try:
         from config.models import ConfigVariable
-        for config in ConfigVariable.objects.all():
-            os.environ[config.key] = config.value
+        if ConfigVariable.objects.exists():
+            for config in ConfigVariable.objects.all():
+                os.environ[config.key] = config.value
+    except ProgrammingError:
+        # This happens when the database is not yet created
+        pass
     except Exception as e:
         # This might fail if the database is not yet created
         # or if the config table does not exist.
@@ -40,6 +45,8 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 
+load_config_from_db()
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -69,8 +76,6 @@ INSTALLED_APPS = [
     'config',
 
 ]
-
-load_config_from_db()
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

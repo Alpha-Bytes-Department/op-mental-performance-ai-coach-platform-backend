@@ -11,11 +11,10 @@ from dotenv import load_dotenv
 
 # It's better to handle configuration in Django's settings.py
 # For now, we load it here for simplicity.
-load_dotenv()
-openai.api_key = os.getenv("OPENAI_API_KEY")
-
 class ChatSystem:
     def __init__(self):
+        load_dotenv()
+        openai.api_key = os.getenv("OPENAI_API_KEY")
         self.model = SentenceTransformer('all-MiniLM-L6-v2')
         self.conversation_history = []
         self.embeddings = []

@@ -41,7 +41,7 @@ class ChatbotApiView(APIView):
         counter = None
         if not has_active_subscription:
             counter, created = UserChatCounter.objects.get_or_create(user=user)
-            if counter.message_count >= 5:
+            if counter.message_count >= 30:
                 # Ensure a session_id exists for the response
                 if not session_id:
                     new_session_id = uuid.uuid4()
