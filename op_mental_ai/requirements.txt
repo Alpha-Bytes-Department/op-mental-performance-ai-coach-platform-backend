@@ -1,0 +1,8 @@
+dotenv
+openai==0.28.0
+faiss-cpu>=1.7.4
+numpy>=1.21.0
+streamlit
+python-dateutil>=2.8.0
+dataclasses-json>=0.5.0
+sentence-transformers
