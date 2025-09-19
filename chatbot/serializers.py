@@ -21,7 +21,7 @@ class ChatSessionSerializer(serializers.ModelSerializer):
     """Serializer for listing chat sessions."""
     class Meta:
         model = ChatSession
-        fields = ['id', 'title', 'created_at', 'updated_at']
+        fields = ['id', 'title', 'save_history', 'created_at', 'updated_at']
 
 class ChatResponseSerializer(serializers.Serializer):
     """Serializer for the chatbot's response."""

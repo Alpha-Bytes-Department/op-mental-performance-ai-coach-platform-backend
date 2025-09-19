@@ -224,7 +224,7 @@ EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = os.environ.get('EMAIL_HOST_USER')
 
 
-FRONTEND_URL = 'http://10.10.12.53:3000' # Example frontend URL
+FRONTEND_URL = 'http://localhost:3000' # Example frontend URL
 
 # DRF Spectacular (API Docs) settings
 SPECTACULAR_SETTINGS = {
