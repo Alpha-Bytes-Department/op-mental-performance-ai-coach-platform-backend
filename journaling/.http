@@ -1,0 +1,7 @@
+###
+POST http://127.0.0.1:9000/api/users/login/
+
+{
+    "email": "shohanulislam19892@gmail.com",
+    "password": "shohan@1081"
+}
