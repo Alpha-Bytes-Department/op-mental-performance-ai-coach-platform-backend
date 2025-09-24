@@ -6,15 +6,15 @@ from typing import Dict, List, Any
 import numpy as np
 import faiss
 from sentence_transformers import SentenceTransformer
-from dotenv import load_dotenv
 from knowledge_base.services import query_knowledge
+
+from django.conf import settings
 
 # It's better to handle configuration in Django's settings.py
 # For now, we load it here for simplicity.
 class ChatSystem:
     def __init__(self):
-        load_dotenv()
-        openai.api_key = os.getenv("OPENAI_API_KEY")
+        openai.api_key = settings.OPENAI_API_KEY
         self.model = SentenceTransformer('all-MiniLM-L6-v2')
         self.conversation_history = []
         self.embeddings = []
@@ -221,7 +221,7 @@ class GeneralChatSystem(ChatSystem):
         
         try:
             response = openai.ChatCompletion.create(
-                model="gpt-4",
+                model="gpt-3.5-turbo",
                 messages=[{"role": "user", "content": full_prompt}],
                 max_tokens=800,
                 temperature=0.7

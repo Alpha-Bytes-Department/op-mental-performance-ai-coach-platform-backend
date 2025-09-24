@@ -33,12 +33,13 @@ class StartChatSessionView(APIView):
 
         return Response({'session_id': session.id}, status=status.HTTP_201_CREATED)
 
+from django.conf import settings
+
 class ChatbotApiView(APIView):
     """API view to interact with the chatbot."""
     permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
-        print("Incoming Chat Request Data:", request.data)
         serializer = ChatRequestSerializer(data=request.data)
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -61,10 +62,10 @@ class ChatbotApiView(APIView):
         # If user is not subscribed, check their message count
         if not has_active_subscription:
             counter, created = UserChatCounter.objects.get_or_create(user=user)
-            if counter.message_count >= 30:
+            if counter.message_count >= 0:
                 return Response(
                     {
-                        "reply": "You have reached your free message limit. Please subscribe for unlimited access.",
+                        "reply": "Subscription Required !",
                         "session_id": session_id
                     },
                     status=status.HTTP_208_ALREADY_REPORTED

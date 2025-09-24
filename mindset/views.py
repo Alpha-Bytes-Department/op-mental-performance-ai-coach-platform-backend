@@ -106,12 +106,20 @@ class MindsetCoachApiView(APIView):
                 session.current_step = updated_state['current_step']
                 session.user_responses = updated_state['user_responses']
                 session.save()
+
+                is_complete = session.current_step > 4
+                
+                if is_complete:
+                    session.delete()  # This cascades and deletes all related MindsetMessage objects.
+                    session_id_to_return = None  # The session is gone.
+                else:
+                    session_id_to_return = session.id
                 
                 response_data = {
                     'reply': coach_response,
-                    'session_id': session.id,
-                    'current_step': session.current_step,
-                    'is_complete': session.current_step > 4
+                    'session_id': session_id_to_return,
+                    'current_step': updated_state['current_step'],
+                    'is_complete': is_complete
                 }
 
             return Response(MindsetResponseSerializer(response_data).data, status=status.HTTP_200_OK)

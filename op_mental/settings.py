@@ -2,7 +2,7 @@ from pathlib import Path
 import os
 from datetime import timedelta
 from dotenv import load_dotenv
-from jazzminsetting.utils import get_admin_theme
+
 
 
 
@@ -59,7 +59,7 @@ INSTALLED_APPS = [
     'chatbot',
     'mindset',
     'internal_challenge',
-    'jazzminsetting',
+
     'config',
     'knowledge_base',
 
@@ -239,10 +239,7 @@ JAZZMIN_SETTINGS = {
     'site_header': 'Optimal Performance Administration',
     'site_brand': 'Optimal Performance',
     'welcome_sign': 'Welcome to the Optimal Performance Admin Panel',
-}
-
-JAZZMIN_UI_TWEAKS = {
-    "theme": get_admin_theme(),
+    'show_ui_builder': True,
 }
 
 # stripe settings
@@ -251,3 +248,40 @@ STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
 STRIPE_WEBHOOK_SECRET = os.environ.get('STRIPE_WEBHOOK_SECRET')
 #STRIPE_LIVE_PUBLIC_KEY = os.environ.get('STRIPE_LIVE_PUBLIC_KEY')
 #STRIPE_LIVE_SECRET_KEY = os.environ.get('STRIPE_LIVE_SECRET_KEY')
+
+OPENAI_API_KEY = os.environ.get('NEW_OPENAI_API_KEY')
+
+
+
+JAZZMIN_UI_TWEAKS = {
+    "navbar_small_text": False,
+    "footer_small_text": False,
+    "body_small_text": False,
+    "brand_small_text": False,
+    "brand_colour" : False,
+    "accent": "accent-primary",
+    "navbar" : "navbar-white navbar-light",
+    "no_navbar_border": False,
+    "navbar_fixed": False,
+    "layout_boxed": False,
+    "footer_fixed": False,
+    "sidebar_fixed": False,
+    "sidebar": "sidebar-dark-primary",
+    "sidebar_nav_small_text": False,
+    "sidebar_disable_expand": False,
+    "sidebar_nav_child_indent": False,
+    "sidebar_nav_compact_style": True,
+    "sidebar_nav_legacy_style": False,
+    "sidebar_nav_flat_style": False,
+    "theme": "darkly",
+    "dark_mode_theme": None,
+    "button_classes": {
+        "primary": "btn-primary",
+        "secondary": "btn-secondary",
+        "info": "btn-info",
+        "warning": "btn-warning",
+        "danger": "btn-danger",
+        "success": "btn-success"
+    }
+
+}

@@ -48,7 +48,8 @@ class MindsetCoach:
         }
 
     def get_welcome_message(self) -> str:
-        return "Welcome to Your Mindset Transformation!\n\nWe'll work through 4 simple steps:\n\nStep 1: Accept the Circumstances\nStep 2: Find Positivity in the Situation \nStep 3: Learn from Past Patterns \nStep 4: Create Your Personal Mantra \n\nThen you'll get your personalized daily plan."
+        #return "Welcome to Your Mindset Transformation!\n\nWe'll work through 4 simple steps:\n\nStep 1: Accept the Circumstances\nStep 2: Find Positivity in the Situation \nStep 3: Learn from Past Patterns \nStep 4: Create Your Personal Mantra \n\nThen you'll get your personalized daily plan."
+        return "Welcome to Your Mindset Transformation!\n"
 
     def get_initial_question(self) -> str:
         return "Let's start by understanding what you're facing. What challenging circumstances are you currently facing that you need to accept?"

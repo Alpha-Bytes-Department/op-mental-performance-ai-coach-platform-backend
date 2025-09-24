@@ -590,13 +590,13 @@ class TherapyInterface:
     def _display_welcome_message(self):
         print("\n Welcome to Internal Challenge Therapy - 5-Phase Framework")
         print("\n I\'m here to guide you through a therapeutic journey to understand and overcome your internal challenges.")
-        print("\n We\'ll work through 5 phases together:")
-        print("   Phase 1: Identification ")
-        print("   Phase 2: Exploration ") 
-        print("   Phase 3: Reframing & Strengths ")
-        print("   Phase 4: Action Planning ")
-        print("   Phase 5: Reflection & Adaptation ")
-        print("\n Remember: This is a safe space. All experiences are welcomed and explored.")
+        #print("\n We\'ll work through 5 phases together:")
+        #print("   Phase 1: Identification ")
+        #print("   Phase 2: Exploration ") 
+        #print("   Phase 3: Reframing & Strengths ")
+        #print("   Phase 4: Action Planning ")
+        #print("   Phase 5: Reflection & Adaptation ")
+        #print("\n Remember: This is a safe space. All experiences are welcomed and explored.")
     
     def _get_initial_challenge(self):
         print("\n Let\'s start by understanding what you\'re facing...")
