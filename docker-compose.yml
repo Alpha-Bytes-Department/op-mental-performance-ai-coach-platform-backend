@@ -1,0 +1,51 @@
+version: "3.9"
+
+services:
+  backend:
+    build: .
+    container_name: backend
+    command: gunicorn op_mental.wsgi:application --bind 0.0.0.0:8000 --workers 4
+    volumes:
+      - ./staticfiles:/app/staticfiles   # matches STATIC_ROOT
+      - ./media:/app/media
+    env_file:
+      - .env
+    expose:
+      - "8000"   # internal only (not public)
+    depends_on:
+      - db
+    networks:
+      - app_net
+
+  db:
+    image: postgres:15
+    container_name: postgres_db
+    restart: always
+    env_file:
+      - .env    # uses POSTGRES_DB, POSTGRES_USER, POSTGRES_PASSWORD
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app_net
+
+  nginx:
+    image: nginx:stable-alpine
+    container_name: nginx_proxy
+    depends_on:
+      - backend
+    ports:
+      - "80:80"    # expose Nginx to the world
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./staticfiles:/app/staticfiles
+      - ./media:/app/media
+      - ./frontend/dist:/usr/share/nginx/html   # 👈 serve React build
+    networks:
+      - app_net
+
+volumes:
+  postgres_data:
+
+networks:
+  app_net:
+    driver: bridge

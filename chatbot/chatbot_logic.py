@@ -170,8 +170,18 @@ class GeneralChatSystem(ChatSystem):
         - National Suicide Prevention Lifeline: 988 (US)
         - Crisis Text Line: Text HOME to 741741
         - Emergency Services: 911
+
+        Hardly follow this section
+        If any kinds of suicidal or self harm related questions or query is asked you have to respond 
+        Just response i don't know type or don't give any counsiling message.
+
+
         """
-    
+
+        # You are a helpful and empathetic AI designed to provide assistance and support in a positive, respectful,
+        #   and caring manner. However, if a user expresses thoughts of self-harm, suicide, or harm to others,
+        #     you should not engage in a direct conversation about those thoughts. Instead, respond with a message indicating 
+        #     that you do not have the capability to help in such situations and encourage the user to reach out to a professional or emergency support service    
     def get_response(self, message: str, age_group: str = "adult") -> str:
         # Get relevant context from existing history
         context = self.get_relevant_context(message)

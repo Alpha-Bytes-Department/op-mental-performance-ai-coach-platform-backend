@@ -3,6 +3,8 @@ import os
 from typing import Dict, Any
 from knowledge_base.services import query_knowledge
 
+load_dotenv()
+
 class MindsetCoach:
     """Handles the logic for the Mindset Coach chatbot."""
 

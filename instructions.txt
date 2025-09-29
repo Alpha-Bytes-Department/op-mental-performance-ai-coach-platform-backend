@@ -1,0 +1,82 @@
+Backend Deployment Guide for Frontend Developers
+
+This document provides a guide for frontend developers on how to understand the backend project structure and how to run the backend services locally.
+
+Project Structure
+
+The backend project is a standard Django application with the following structure:
+
+.
+├── Dockerfile
+├── docker-compose.yml
+├── requirements.txt
+├── .env.example
+├── manage.py
+├── op_mental/         # Main Django project folder
+├── users/             # Django apps
+├── reviews/
+├── ...
+├── static/            # Collected static files
+└── media/             # User uploads
+
+Key Deployment Files
+
+The following files are crucial for the deployment of the backend application:
+
+*   `Dockerfile`: This file is located in the root directory of the project. It contains the instructions to build a Docker image for the Django application. This image includes all the necessary dependencies and configurations to run the application in a containerized environment.
+
+*   `docker-compose.yml`: This file is also located in the root directory of the project. It is used to define and run the multi-container Docker application. It specifies the services that make up the application, including the backend service (running the Django application) and the database service (running a PostgreSQL database).
+
+Backend API Endpoint
+
+Once the backend is deployed, the main base URL for the API will be:
+
+`http://<your_server_ip>:8000`
+
+For example, if the server IP is `172.31.29.183`, the base URL will be:
+
+`http://172.31.29.183:8000`
+
+You will need to configure your frontend application to make API requests to this base URL.
+
+Running the Backend Locally
+
+To run the backend services locally for development and testing, you can use Docker and Docker Compose. Follow these steps:
+
+1.  Install Docker and Docker Compose on your local machine.
+
+2.  Create a `.env` file in the root of the project by copying the `.env.example` file:
+
+    `cp .env.example .env`
+
+3.  Fill in the required environment variables in the `.env` file. For local development, you can use the following values:
+
+    DJANGO_SECRET_KEY=your-secret-key
+    DJANGO_DEBUG=True
+    DJANGO_ALLOWED_HOSTS=127.0.0.1,localhost
+
+    POSTGRES_DB=app_db
+    POSTGRES_USER=app_user
+    POSTGRES_PASSWORD=supersecurepassword
+    POSTGRES_HOST=db
+    POSTGRES_PORT=5432
+
+    DATABASE_URL=postgres://app_user:supersecurepassword@db:5432/app_db
+
+    NEW_OPENAI_API_KEY=
+
+4.  Build and run the containers using Docker Compose:
+
+    `docker-compose up -d --build`
+
+5.  Run database migrations to create the necessary tables:
+
+    `docker-compose exec backend python manage.py migrate`
+
+6.  Create a superuser to access the Django admin panel:
+
+    `docker-compose exec backend python manage.py createsuperuser`
+
+For you, since you have deployed the backend to your AWS server, the correct URL to access the application is your server's IP address:
+
+  http://172.31.29.183:8000
