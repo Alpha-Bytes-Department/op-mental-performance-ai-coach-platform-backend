@@ -3,19 +3,20 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from django.shortcuts import get_object_or_404
-import uuid
 
-from .models import ChatSession, ChatMessage, UserChatCounter
+from .models import ChatSession, ChatMessage, UserChatCounter, ChatbotSettings
 from .serializers import (
     StartChatSessionSerializer,
     ChatRequestSerializer,
     ChatResponseSerializer,
     ChatSessionSerializer,
-    ChatMessageSerializer
+    ChatMessageSerializer,
+    ChatbotSettingsSerializer
 )
 from .chatbot_logic import GeneralChatSystem
 from subscriptions.models import UserSubscription
 from django.utils import timezone
+
 
 class StartChatSessionView(APIView):
     """API view to start a new chat session."""
@@ -26,14 +27,16 @@ class StartChatSessionView(APIView):
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        save_history = serializer.validated_data.get('save_history')
-        user = request.user
+        global_settings = ChatbotSettings.get_settings()
 
-        session = ChatSession.objects.create(user=user, save_history=save_history)
+        if not global_settings.allow_chat_history:
+            save_history = False
+        else:
+            save_history = serializer.validated_data.get('save_history', False)
 
+        session = ChatSession.objects.create(user=request.user, save_history=save_history)
         return Response({'session_id': session.id}, status=status.HTTP_201_CREATED)
 
-from django.conf import settings
 
 class ChatbotApiView(APIView):
     """API view to interact with the chatbot."""
@@ -52,33 +55,26 @@ class ChatbotApiView(APIView):
 
         session = get_object_or_404(ChatSession, id=session_id, user=user)
 
-        # Check for an active subscription
         has_active_subscription = UserSubscription.objects.filter(
             user=user,
             status='active',
             end_date__gte=timezone.now()
         ).exists()
 
-        # If user is not subscribed, check their message count
         if not has_active_subscription:
             counter, created = UserChatCounter.objects.get_or_create(user=user)
             if counter.message_count >= 0:
                 return Response(
-                    {
-                        "reply": "Subscription Required !",
-                        "session_id": session_id
-                    },
+                    {"reply": "Subscription Required !", "session_id": session_id},
                     status=status.HTTP_208_ALREADY_REPORTED
                 )
             counter.message_count += 1
             counter.save()
 
-        # If the session doesn't have a title, create one from the first message
         if not session.title and session.save_history:
-            session.title = ' '.join(user_message.split()[:5]) # Use first 5 words
+            session.title = ' '.join(user_message.split()[:5])
             session.save()
 
-        # Load history from the database if saving is enabled
         history = []
         if session.save_history:
             history = session.messages.all()
@@ -91,12 +87,10 @@ class ChatbotApiView(APIView):
                 "full_conversation": f"User: {item.message if item.role == 'user' else ''}\nBot: {item.message if item.role == 'assistant' else ''}"
             })
 
-        # Initialize and run the chatbot logic
         chat_system = GeneralChatSystem()
         chat_system.load_history(formatted_history)
         bot_response = chat_system.get_response(user_message, age_group)
 
-        # Save the conversation to the database if saving is enabled
         if session.save_history:
             ChatMessage.objects.create(session=session, role='user', message=user_message)
             ChatMessage.objects.create(session=session, role='assistant', message=bot_response)
@@ -108,6 +102,7 @@ class ChatbotApiView(APIView):
 
         return Response(response_serializer.data, status=status.HTTP_200_OK)
 
+
 class ChatHistoryView(APIView):
     """API view to list all saved chat sessions for a user."""
     permission_classes = [IsAuthenticated]
@@ -116,6 +111,7 @@ class ChatHistoryView(APIView):
         sessions = ChatSession.objects.filter(user=request.user, save_history=True).order_by('-updated_at')
         serializer = ChatSessionSerializer(sessions, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 class ChatHistoryDetailView(APIView):
     """API view to retrieve or delete a specific chat session."""
@@ -131,3 +127,13 @@ class ChatHistoryDetailView(APIView):
         session = get_object_or_404(ChatSession, id=session_id, user=request.user)
         session.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class ChatbotSettingsView(APIView):
+    """API view to expose chatbot global settings (for frontend use)."""
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        settings_instance = ChatbotSettings.get_settings()
+        serializer = ChatbotSettingsSerializer(settings_instance)
+        return Response(serializer.data, status=status.HTTP_200_OK)

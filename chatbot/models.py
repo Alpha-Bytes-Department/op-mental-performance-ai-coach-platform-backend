@@ -1,5 +1,7 @@
 from django.db import models
 from django.conf import settings
+import uuid
+
 
 class UserChatCounter(models.Model):
     """Tracks the number of chat messages sent by a non-subscribed user."""
@@ -19,9 +21,6 @@ class UserChatCounter(models.Model):
     class Meta:
         db_table = 'user_chat_counters'
 
-import uuid
-from django.conf import settings
-from django.db import models
 
 class ChatSession(models.Model):
     """Stores a chat session, with an option to save the history."""
@@ -35,6 +34,7 @@ class ChatSession(models.Model):
     def __str__(self):
         return f"ChatSession {self.id} for {self.user.username}"
 
+
 class ChatMessage(models.Model):
     """Stores a single message within a chat session."""
     session = models.ForeignKey(ChatSession, on_delete=models.CASCADE, related_name='messages')
@@ -47,3 +47,24 @@ class ChatMessage(models.Model):
 
     class Meta:
         ordering = ['created_at']
+
+
+class ChatbotSettings(models.Model):
+    """Global settings for chatbot functionality (singleton)."""
+    allow_chat_history = models.BooleanField(
+        default=True,
+        help_text="If disabled, users cannot save chat history regardless of their preference"
+    )
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = 'Chatbot Settings'
+        verbose_name_plural = 'Chatbot Settings'
+
+    def __str__(self):
+        return f"Chatbot Settings (Updated: {self.updated_at})"
+
+    @classmethod
+    def get_settings(cls):
+        """Get or create singleton settings instance"""
+        return cls.objects.get_or_create(pk=1)[0]

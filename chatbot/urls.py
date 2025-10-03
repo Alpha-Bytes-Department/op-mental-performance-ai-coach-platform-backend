@@ -4,7 +4,8 @@ from .views import (
     StartChatSessionView,
     ChatbotApiView,
     ChatHistoryView,
-    ChatHistoryDetailView
+    ChatHistoryDetailView,
+    ChatbotSettingsView
 )
 
 urlpatterns = [
@@ -19,4 +20,8 @@ urlpatterns = [
 
     # Endpoint to retrieve or delete a specific chat session
     path('history/<uuid:session_id>/', ChatHistoryDetailView.as_view(), name='chatbot_history_detail'),
+
+    # Endpoint to get or update chatbot settings
+    path('settings/', ChatbotSettingsView.as_view(), name='chatbot_settings'),
+
 ]
