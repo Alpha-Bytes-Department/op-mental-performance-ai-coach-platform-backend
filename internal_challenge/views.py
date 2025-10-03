@@ -26,7 +26,7 @@ class ChallengeAPIView(APIView):
         if not session_id:
             # New session: return welcome message and create session
             session = ChallengeSession.objects.create(user=user, current_phase=TherapyPhase.IDENTIFICATION.name)
-            
+             
             welcome_message = {
                 "session_id": str(session.id),
                 "is_session_complete": False,
@@ -46,7 +46,7 @@ class ChallengeAPIView(APIView):
                 "question": "What internal challenge would you like to work through today? Please share what's on your mind:",
                 "error_message": None
             }
-            
+             
             session.conversation_history = [welcome_message]
             session.save()
             

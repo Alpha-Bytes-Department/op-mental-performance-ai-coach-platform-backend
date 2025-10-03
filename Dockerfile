@@ -17,8 +17,10 @@ WORKDIR /app
 
 # Install Python dependencies
 COPY requirements.txt .
-RUN pip install --upgrade pip && pip install -r requirements.txt
 
+RUN pip install --upgrade pip && \
+    pip install torch==2.8.0 && \
+    pip install -r requirements.txt
 # Copy project files
 COPY . .
 

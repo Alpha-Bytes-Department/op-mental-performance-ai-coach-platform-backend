@@ -2,6 +2,8 @@ import openai
 import os
 from typing import Dict, Any
 from knowledge_base.services import query_knowledge
+from dotenv import load_dotenv
+
 
 load_dotenv()
 
